@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>badretdinov.ruslan</groupId>
+    <artifactId>badretdinov.ruslan</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <!-- Encoding -->
+        <encoding.type>UTF-8</encoding.type>
+        <project.build.sourceEncoding>${encoding.type}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding.type}</project.reporting.outputEncoding>
+        <file.encoding>${encoding.type}</file.encoding>
+
+        <!-- Java version -->
+        <java.version>8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- Dependencies Version -->
+        <selenium-java.version>3.141.59</selenium-java.version>
+
+        <junit-jupiter.version>5.8.1</junit-jupiter.version>
+        <junit-platform-launcher.version>1.8.1</junit-platform-launcher.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <allure-junit5.version>2.13.6</allure-junit5.version>
+
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
+        <allure-maven.version>2.10.0</allure-maven.version>
+
+        <aspectj.version>1.9.7</aspectj.version>
+
+        <mytag>rencreditAll</mytag>
+    </properties>
+
+    <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium-java.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <!--            <scope>test</scope>-->
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit-platform-launcher.version}</version>
+            <!--            <scope>test</scope>-->
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-junit5 -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>${allure-junit5.version}</version>
+            <!--            <scope>test</scope>-->
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Плагин, который отвечает за компиляцию как тестов так и в целом всех Java-классов -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${encoding.type}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Плагин, который отвечает за запуск тестов и сбор информации о состоянии тестов которые были запущены -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <includes>**/*Test.java</includes>
+                    <argLine>
+                        <!--                        -Xmx1024m-->
+                        -Dfile.encoding=${encoding.type}
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        -Dallure.results.directory=${project.build.directory}/reports/allure-results
+                    </argLine>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>ru/dnsshop/framework/utils/MyAllureListener</value>
+                        </property>
+                    </properties>
+                    <!--                    &lt;!&ndash; Можно прописать в args &ndash;&gt;-->
+                    <!--                    <systemPropertyVariables>-->
+                    <!--                        <allure.results.directory>${project.build.directory}/reports/allure-results</allure.results.directory>-->
+                    <!--                    </systemPropertyVariables>-->
+                    <groups>${mytag}</groups>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${allure-maven.version}</version>
+
+                <configuration>
+                    <reportVersion>${allure-maven.version}</reportVersion>
+                    <resultsDirectory>${project.build.directory}/reports/allure-results</resultsDirectory>
+                    <reportDirectory>${project.build.directory}/reports/allure-reports</reportDirectory>
+                </configuration>
+
+                <!-- Можно без этого, если на прямую задать команду -->
+                <!-- mvn clean allure:report -->
+                <!--                <executions>-->
+                <!--                    <execution>-->
+                <!--                        <id>allure-plugin</id>-->
+                <!--                        &lt;!&ndash; фаза ниже, чем тест &ndash;&gt;-->
+                <!--                        <phase>install</phase>-->
+                <!--                        <goals>-->
+                <!--                            &lt;!&ndash; <goal>report</goal> не сразу&ndash;&gt;-->
+                <!--                            &lt;!&ndash; <goal>serve</goal> &ndash;&gt;-->
+                <!--                            <goal>report</goal>-->
+                <!--                        </goals>-->
+                <!--                    </execution>-->
+                <!--                </executions>-->
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
