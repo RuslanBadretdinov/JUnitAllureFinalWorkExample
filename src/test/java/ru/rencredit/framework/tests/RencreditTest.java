@@ -64,6 +64,7 @@ public class RencreditTest extends BaseTests {
             String amountPerMonthValue, String isCapitalization, String percent, String amountPerDuration, String grandAmount
     ) {
         //  mvn clean test -Dmytag=rencreditCalculatorParametrizedTestAll allure:serve
+        //  mvn clean test -Dtest=**/*Test.java#calculatorParametrizedTest allure:serve
         pageManager.getStartPage()
                 .checkStartPage()
                 .clickToNeededTab(tabName)

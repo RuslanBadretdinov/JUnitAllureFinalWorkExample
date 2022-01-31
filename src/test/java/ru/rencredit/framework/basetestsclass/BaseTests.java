@@ -4,16 +4,15 @@ package ru.rencredit.framework.basetestsclass;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import ru.rencredit.framework.managers.DriverManager;
 import ru.rencredit.framework.managers.InitManager;
 import ru.rencredit.framework.managers.PageManager;
 import ru.rencredit.framework.managers.TestPropManager;
+import ru.rencredit.framework.utils.MyAllureListener;
 import ru.rencredit.framework.utils.PropConst;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
+@ExtendWith(MyAllureListener.class)
 public class BaseTests {
     /**
      * Менеджер страничек
